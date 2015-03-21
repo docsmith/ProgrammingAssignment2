@@ -2,6 +2,7 @@
 ## functions do
 
 ## Write a short comment describing this function
+## This is a test for git push
 
 makeCacheMatrix <- function(x = matrix()) {
 
