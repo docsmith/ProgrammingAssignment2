@@ -8,8 +8,11 @@
 ## - a setMatrix function to redefine an existing matrix,
 ## - a getMatrix function to return its values
 ## - a getInverse to return the cached inverse of the matrix
-## - a setInverse to calculate and store the inverse in cache
+## - a setInverse to store a matrix-value as inverse matrix in cache
+## - a calcInverse to calculate and store the inverse of the given matrix in cache
+
 ## The functions created are stored in a list using the corresponding names
+## Attention: The function calcInverse assumes that the matrix passed to it is invertible
 
 makeCacheMatrix <- function(x = matrix()) {
     inverted <- NULL
@@ -17,14 +20,14 @@ makeCacheMatrix <- function(x = matrix()) {
     getMatrix <- function() x
     setMatrix <- function(m){
         x <<- m
-        inverted <- NULL # since the matrix is redefined, the old inverse is no longer valid
+        inverted <<- NULL # since the matrix is redefined, the old inverse is no longer valid
     }
     
     getInverse <- function() inverted
     setInverse <- function(i) inverted <<- i  # Set the inverse of x to i and store it in the given instance of makeCacheMatrix
-    #calcInverse <- function() inverted <<- solve(x)  # an alternative approach
+    calcInverse <- function() inverted <<- solve(x)  # Calculates the inverse and stores it using the R solve - see ?solve for information
     
-    list(getMatrix = getMatrix, setMatrix = setMatrix, getInverse = getInverse, setInverse = setInverse)
+    list(getMatrix = getMatrix, setMatrix = setMatrix, getInverse = getInverse, setInverse = setInverse, calcInverse=calcInverse)
     
 }
 
@@ -47,16 +50,13 @@ cacheSolve <- function(x, ...) {
             message("retrieving inverse from cache")
             return(i)
         }
-        ## else we calculate it
-        m <- x$getMatrix()
-            ## get the matrix for which we want to calculate the inverse
-        i <- solve(m,...)
-        x$setInverse(i)
-        i
-            ## calculate the inverse and store it in the current instance of the 'makeCacheMatrix' and return the result i to the console;
-            
-        ## alternative approach (see alternative approach comment in makeCacheMatrix) - just two lines:
-        ## x$calcInverse()  #calculates and stores the inverse
-        ## x$getInverse()   #returns the result to the console
+        ## else we calculate it and return it to the console
+        x$calcInverse()
+        x$getInverse() #retrieve value and pass it as output
         
+        ## alternative approach using the same structure as in the vector example from the assignment description would be the following:
+        # m <- x$getMatrix() ## get the matrix for which we want to calculate the inverse
+        # i <- solve(m,...)
+        # x$setInverse(i)
+        # i
 }
