@@ -25,7 +25,9 @@ makeCacheMatrix <- function(x = matrix()) {
     
     getInverse <- function() inverted
     setInverse <- function(i) inverted <<- i  # Set the inverse of x to i and store it in the given instance of makeCacheMatrix
-    calcInverse <- function() inverted <<- solve(x)  # Calculates the inverse and stores it using the R solve - see ?solve for information
+    calcInverse <- function(...) inverted <<- solve(x,...)
+        # Calculates the inverse and stores it using the R solve - see ?solve for information
+        # ... are passed as arguments to solve()
     
     list(getMatrix = getMatrix, setMatrix = setMatrix, getInverse = getInverse, setInverse = setInverse, calcInverse=calcInverse)
     
@@ -51,7 +53,7 @@ cacheSolve <- function(x, ...) {
             return(i)
         }
         ## else we calculate it and return it to the console
-        x$calcInverse()
+        x$calcInverse(...)
         x$getInverse() #retrieve value and pass it as output
         
         ## alternative approach using the same structure as in the vector example from the assignment description would be the following:
