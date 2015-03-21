@@ -3,7 +3,6 @@
 ## Put comments here that give an overall description of what your
 ## functions do
 
-## Write a short comment describing this function
 ## makeCacheMatrix makes use of the structure of Prof. Peng's example function makeVector.
 ## It contains
 ## - a setMatrix function to redefine an existing matrix,
@@ -11,8 +10,6 @@
 ## - a getInverse to return the cached inverse of the matrix
 ## - a setInverse to calculate and store the inverse in cache
 ## The functions created are stored in a list using the corresponding names
-## Attention: The function assumes that the matrix used is invertible
-## Please note: Contrary to the vector example the calculation of the inverse is already done when setInverse is invoked.
 
 makeCacheMatrix <- function(x = matrix()) {
     inverted <- NULL
@@ -24,15 +21,42 @@ makeCacheMatrix <- function(x = matrix()) {
     }
     
     getInverse <- function() inverted
-    setInverse <- function() inverted <<- solve(x)  # Calculate the inverse of x and store it in inverted
+    setInverse <- function(i) inverted <<- i  # Set the inverse of x to i and store it in the given instance of makeCacheMatrix
+    #calcInverse <- function() inverted <<- solve(x)  # an alternative approach
     
     list(getMatrix = getMatrix, setMatrix = setMatrix, getInverse = getInverse, setInverse = setInverse)
     
 }
 
 
-## Write a short comment describing this function
+## cacheSolve takes a list-type as created by makeCacheMatrix
+## If no inverse has been calculated or the matrix has not been changed, the inverse will be calculated using th R function solve
+## The result is then stored using setInverse from the passed instance of makeCacheMatrix
+##
+## Attention: The function assumes that the matrix passed to it is invertible
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
+        ## ... contain parameter-settings for R-built-in solve function. See ?solve for more information
+        
+        i <- x$getInverse()
+            ## set i to the currently stored inverse of matrix instance x
+        
+        ## if there is an entry for the inverse we return it
+        if (!is.null(i)){
+            message("retrieving inverse from cache")
+            return(i)
+        }
+        ## else we calculate it
+        m <- x$getMatrix()
+            ## get the matrix for which we want to calculate the inverse
+        i <- solve(m,...)
+        x$setInverse(i)
+        i
+            ## calculate the inverse and store it in the current instance of the 'makeCacheMatrix' and return the result i to the console;
+            
+        ## alternative approach (see alternative approach comment in makeCacheMatrix) - just two lines:
+        ## x$calcInverse()  #calculates and stores the inverse
+        ## x$getInverse()   #returns the result to the console
+        
 }
